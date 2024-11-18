@@ -18,15 +18,4 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((error) => console.error("Connexion à MongoDB échouée : ", error));
 
-app.post("/api/stuff", (req, res, next) => {
-  console.log(req.body);
-  res.status(201).json({
-    message: "Objet créé !",
-  });
-});
-
-app.use((req, res) => {
-  res.json({ message: "Hello World!" });
-});
-
 module.exports = app;
