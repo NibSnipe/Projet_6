@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const app = express();
 require("dotenv").config();
+
+const app = express();
 app.use(express.json());
 
 const mongodb_id = process.env.id;
@@ -17,5 +18,8 @@ mongoose
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((error) => console.error("Connexion à MongoDB échouée : ", error));
+
+app.use("/api/books", require("./routes/books"));
+app.use("/api/auth", require("./routes/users"));
 
 module.exports = app;
