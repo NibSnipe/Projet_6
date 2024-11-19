@@ -1,15 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const booksCtrl = require("../controllers/books");
 
-router.post("/api/stuff", (req, res, next) => {
-  console.log(req.body);
-  res.status(201).json({
-    message: "Objet créé !",
-  });
-});
-
-router.use((req, res) => {
-  res.json({ message: "Hello World!" });
-});
+router.get("/", booksCtrl.getAllBooks);
+router.get("/:id", booksCtrl.getOneBook);
+router.post("/", booksCtrl.createBook);
+router.put("/:id", booksCtrl.modifyBook);
+router.delete("/:id", booksCtrl.deleteBook);
 
 module.exports = router;
