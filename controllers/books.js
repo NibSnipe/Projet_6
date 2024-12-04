@@ -76,3 +76,44 @@ exports.deleteBook = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
+exports.ratingBook = (req, res, next) => {
+  const userId = req.auth.userId;
+  const { rating } = req.body;
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      if (!book) {
+        res.status(404).json({ message: "Livre non trouvé" });
+      }
+      const existingRatingIndex = book.ratings.findIndex(
+        (r) => r.userId.toString() === userId
+      );
+      if (existingRatingIndex !== -1) {
+        res.status(400).json({ message: "Vous avez déjà noté ce livre" });
+      }
+
+      book.ratings.push({ userId, grade: rating });
+
+      const totalRatings = book.ratings.length;
+      const sumRatings = book.ratings.reduce(
+        (sum, rating) => sum + rating.grade,
+        0
+      );
+      const averageRating = sumRatings / totalRatings;
+      const roundedAverageRating = parseFloat(averageRating.toFixed(1));
+
+      book.averageRating = roundedAverageRating;
+
+      return book.save();
+    })
+    .then((updatedBook) => res.status(200).json(updatedBook))
+    .catch((error) => res.status(500).json({ error }));
+};
+
+exports.getBestRatedBooks = (req, res) => {
+  Book.find()
+    .sort({ averageRating: -1 })
+    .limit(3)
+    .then((books) => res.status(200).json(books))
+    .catch((error) => res.status(500).json({ error }));
+};

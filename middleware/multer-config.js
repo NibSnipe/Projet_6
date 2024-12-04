@@ -34,6 +34,7 @@ const resizeImage = async (req, res, next) => {
         fit: "inside",
         withoutEnlargement: true,
       })
+      .webp()
       .toFile(outputPath);
 
     fs.unlink(inputPath, (err) => {
